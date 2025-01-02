@@ -1,0 +1,36 @@
+#!/bin/sh
+#
+# Automatically adds branch name and branch description to every commit message.
+# Modified from the stackoverflow answer here: http://stackoverflow.com/a/11524807/151445
+#
+ 
+# Succeed on all merge messages, as evidenced by MERGE_MSG existing
+if [ -f $GIT_DIR/MERGE_MSG ]; then
+  echo "🔄 Commit de fusión detectado, omitiendo..."
+  exit 0
+fi
+
+# Get branch name and description
+NAME=$(git branch | grep '*' | sed 's/* //')
+ 
+
+# Don't apply this logic if we are in a 'detached head' state (rebasing, read-only history, etc)
+if [ "$NAME" != "(no branch)" ]; then
+    # Read current commit message
+    CURRENT_MESSAGE=$(cat "$1")
+    
+    # Create new commit message with branch name prepended
+    NEW_MESSAGE="${NAME} ${CURRENT_MESSAGE}"
+    
+    # Write new commit message to the file
+    echo -e "$NEW_MESSAGE" > "$1"
+    
+    echo "✅ Nombre de la rama añadido al mensaje del commit."
+    
+   
+else
+    echo "🚫 En estado de HEAD separado, omitiendo modificación del mensaje del commit."
+fi
+
+# Final message indicating completion
+echo "✔️ Hook prepare-commit-msg completado."
