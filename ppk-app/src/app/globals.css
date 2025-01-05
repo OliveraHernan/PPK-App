@@ -3,19 +3,216 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  :root {
+    /* Neutral colors */
+    --background: 0 0% 100%; /* Neutral/100 */
+    --foreground: 0 0% 20%; /* Neutral/1000 */
+    
+    /* Primary colors */
+    --primary: 276 100% 50%; /* Primary/200 */
+    --primary-foreground: 0 0% 100%;
+    
+    /* Secondary colors */
+    --secondary: 20 100% 47%; /* Secondary/300 */
+    --secondary-foreground: 0 0% 100%;
+    
+    /* Card colors */
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 20%;
+    
+    /* Popover colors */
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 20%;
+    
+    /* Muted colors */
+    --muted: 0 0% 91%; /* Neutral/200 */
+    --muted-foreground: 0 0% 47%; /* Neutral/700 */
+    
+    /* Accent colors */
+    --accent: 276 100% 50%; /* Primary/200 */
+    --accent-foreground: 0 0% 100%;
+    
+    /* Destructive colors */
+    --destructive: 355 95% 60%; /* Red/100 */
+    --destructive-foreground: 0 0% 100%;
+    
+    /* Border and input colors */
+    --border: 0 0% 82%; /* Neutral/300 */
+    --input: 0 0% 82%; /* Neutral/300 */
+    --ring: 276 100% 50%; /* Primary/200 */
+
+    /* Chart colors */
+    --chart-1: 276 100% 50%; /* Primary/200 */
+    --chart-2: 20 100% 47%; /* Secondary/300 */
+    --chart-3: 154 67% 47%; /* Green/200 */
+    --chart-4: 48 100% 63%; /* Yellow/100 */
+    --chart-5: 355 95% 60%; /* Red/100 */
+    
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    /* Neutral colors */
+    --background: 0 0% 20%; /* Neutral/1000 */
+    --foreground: 0 0% 100%; /* Neutral/100 */
+    
+    /* Primary colors */
+    --primary: 276 100% 56%; /* Primary/100 */
+    --primary-foreground: 0 0% 100%;
+    
+    /* Secondary colors */
+    --secondary: 20 100% 65%; /* Secondary/200 */
+    --secondary-foreground: 0 0% 100%;
+    
+    /* Card colors */
+    --card: 0 0% 20%;
+    --card-foreground: 0 0% 100%;
+    
+    /* Popover colors */
+    --popover: 0 0% 20%;
+    --popover-foreground: 0 0% 100%;
+    
+    /* Muted colors */
+    --muted: 0 0% 29%; /* Neutral/900 */
+    --muted-foreground: 0 0% 64%; /* Neutral/500 */
+    
+    /* Accent colors */
+    --accent: 276 100% 56%; /* Primary/100 */
+    --accent-foreground: 0 0% 100%;
+    
+    /* Destructive colors */
+    --destructive: 355 95% 48%; /* Red/200 */
+    --destructive-foreground: 0 0% 100%;
+    
+    /* Border and input colors */
+    --border: 0 0% 29%; /* Neutral/900 */
+    --input: 0 0% 29%; /* Neutral/900 */
+    --ring: 276 100% 56%; /* Primary/100 */
+
+    /* Chart colors */
+    --chart-1: 276 100% 56%; /* Primary/100 */
+    --chart-2: 20 100% 65%; /* Secondary/200 */
+    --chart-3: 154 67% 57%; /* Green/100 */
+    --chart-4: 48 100% 73%; /* Yellow/100 */
+    --chart-5: 355 95% 70%; /* Red/100 */
+  }
+}
+
+.auth-layout {
+  min-height: 100vh;
+  background: linear-gradient(
+    135deg,
+    #7800de 0%,    /* Primary/300 */
+    #510096 100%   /* Primary/400 */
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.auth-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 1rem;
+  padding: 2rem;
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.05)
+  );
+  z-index: 0;
+}
+
+.auth-content {
+  position: relative;
+  z-index: 1;
+}
+
+.auth-logo {
+  width: 48px;
+  height: 48px;
+  background: #9b27ff; /* Primary/200 */
+  border-radius: 8px;
+  margin: 0 auto 1.5rem;
+}
+
+.auth-title {
+  color: white;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+}
+
+.auth-input {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  transition: all 0.2s;
+}
+
+.auth-input:focus {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.auth-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.auth-button {
+  background: #9b27ff; /* Primary/200 */
+  color: white;
+  font-weight: 500;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+}
+
+.auth-button:hover {
+  background: #7800de; /* Primary/300 */
+}
+
+.auth-label {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }

@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -18,14 +19,9 @@
       }
     ],
     "paths": {
-      "@/*":         ["./src/app/*"],
-      "@app/*":      ["./src/app/*"],
-      "@lib/*":      ["./src/lib/*"],
-      "@pages/*":    ["./src/app/(pages)/*"],
-      "@public/*":   ["./../public/*"],
-      "@styles/*":   ["./src/app/(app)/_styles/*"],
+      "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/(pages)/api/sessions/route.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "next.config.js"],
   "exclude": ["node_modules"]
 }

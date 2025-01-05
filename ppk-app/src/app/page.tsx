@@ -1,3 +1,11 @@
+"use client";
+import React from 'react';
+import LoginForm from '../components/loginPage/loginForm';
+
 export default function Home() {
-  return <div>Welcome to the Home Page</div>;
+  return (
+    <main>
+      <LoginForm />
+    </main>
+  );
 }

@@ -1,8 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    appDir: true, // Habilita el App Router
-  },
+  output: 'export',
   eslint: {
     ignoreDuringBuilds: true,
   },
