@@ -35,7 +35,7 @@ const RegisterForm = () => {
         <div className="text-sm text-gray-600">
           ¿Ya tienes una cuenta?{' '}
           <Link 
-            href="/login"
+            href="/"
             className="text-primary hover:underline font-medium"
           >
             Inicia sesión

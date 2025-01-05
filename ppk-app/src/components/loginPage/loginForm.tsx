@@ -16,7 +16,7 @@ const LoginForm: React.FC = () => {
   const loginAdditionalContent = (
     <div className="space-y-6">
       <Link 
-        href="/forgot-password"
+        href="/restartPassword"
         className="text-sm text-primary hover:underline block -mt-2 text-left"
       >
         ¿Olvidaste tu contraseña?
