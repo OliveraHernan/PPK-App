@@ -12,7 +12,16 @@ const RestartPasswordForm = () => {
     console.log('Reset Password Data:', data);
   };
 
-  return <BaseForm fields={fields} title="¿Olvidaste tu contraseña?" submitText="Send Reset Link" onSubmit={handleSubmit} />;
+  const resetAdditionalContent = (
+    <div className="text-[#510096] font-bold text-center">
+      ¿Olvidaste tu contraseña?
+    </div>
+  );
+
+  return (
+  <BaseForm fields={fields} title="¿Olvidaste tu contraseña?" submitText="Recuperar Contraseña" onSubmit={handleSubmit} additionalContent={resetAdditionalContent} />
+  );
+
 };
 
 export default RestartPasswordForm;

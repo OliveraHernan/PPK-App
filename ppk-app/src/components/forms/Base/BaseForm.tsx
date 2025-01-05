@@ -5,8 +5,8 @@ import { Card } from '../../ui/card';
 import { Input } from '../../ui/input';
 import { Label } from '@radix-ui/react-label';
 import { BaseFormProps } from '@/src/lib/interfaces/BaseFormInterfaces';
-
-
+import  Img  from 'next/image';
+import '/src/styles/style.css'
 
 const BaseForm: React.FC<BaseFormProps> = ({
   title,
@@ -29,19 +29,20 @@ const BaseForm: React.FC<BaseFormProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-700 to-pink-500 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md mx-auto bg-white/90 backdrop-blur">
+    <div className="custom-gradient min-h-screen flex items-center justify-center p-4">
+      <Img src="/Dice.svg" alt="Dice-1" className="" width={80} height={80} />
+      <Card className="bg-[#5882C1] bg-opacity-25 border-[#5882C1] rounded-3xl w-full max-w-md mx-auto backdrop-blur">
         <form onSubmit={handleSubmit} className="space-y-4 p-6">
           {logo && (
-            <div className="flex justify-center mb-6">
-              <img src="/logo.svg" alt="Logo" className="w-12 h-12" />
+            <div className="flex justify-center">
+              <Img src="/logo.png" alt="Logo" className="w-20 h-20" width={80} height={80} />
             </div>
           )}
           
           <div className="space-y-4">
             {fields.map((field) => (
               <div key={field.name} className="space-y-2">
-                <Label htmlFor={field.name} className="block text-sm font-medium">
+                <Label htmlFor={field.name} className="block text-sm font-medium text-white">
                   {field.label}
                 </Label>
                 <Input
@@ -69,6 +70,7 @@ const BaseForm: React.FC<BaseFormProps> = ({
           )}
         </form>
       </Card>
+      <Img src="/Dice.svg" alt="Dice-2" className="" width={80} height={80} />
     </div>
   );
 };
