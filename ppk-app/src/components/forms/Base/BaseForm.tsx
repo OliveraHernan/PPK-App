@@ -6,17 +6,20 @@ import { Input } from '../../ui/input';
 import { Label } from '@radix-ui/react-label';
 import { BaseFormProps } from '@/src/lib/interfaces/BaseFormInterfaces';
 
+interface ExtendedBaseFormProps extends BaseFormProps {
+  children?: React.ReactNode;
+}
 
-
-const BaseForm: React.FC<BaseFormProps> = ({
+const BaseForm: React.FC<ExtendedBaseFormProps> = ({
   title,
-  fields,
+  fields = [],
   submitText = 'Submit',
   onSubmit,
   footer,
   logo = true,
   isLoading = false,
   additionalContent,
+  children,
 }) => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -38,6 +41,8 @@ const BaseForm: React.FC<BaseFormProps> = ({
             </div>
           )}
           
+          {children}
+          
           <div className="space-y-4">
             {fields.map((field) => (
               <div key={field.name} className="space-y-2">
@@ -55,7 +60,7 @@ const BaseForm: React.FC<BaseFormProps> = ({
               </div>
             ))}
           </div>
-
+          
           <Button 
             type="submit" 
             className="w-full bg-purple-700 hover:bg-purple-800 text-white py-2 rounded-lg mt-6"

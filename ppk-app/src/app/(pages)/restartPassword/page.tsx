@@ -1,18 +1,101 @@
 "use client";
 import BaseForm from '@/src/components/forms/Base/BaseForm';
-import React from 'react';
+import React, { useState } from 'react';
 
+async function verifyEmailAndSendLink(email: string): Promise<{ success: boolean; message: string }> {
+  try {
+    // Primero verificamos el email
+    const verifyResponse = await fetch('/api/auth/verify-email', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email }),
+    });
+
+    const verifyData = await verifyResponse.json();
+
+    // Si el email existe, enviamos el correo
+    if (verifyData.exists) {
+      const sendEmailResponse = await fetch('/api/auth/send-reset-link', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const sendEmailData = await sendEmailResponse.json();
+      return {
+        success: true,
+        message: sendEmailData.message
+      };
+    }
+
+    // Si el email no existe, retornamos el mensaje de error
+    return {
+      success: false,
+      message: verifyData.message
+    };
+
+  } catch (error) {
+    console.error('Error:', error);
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : 'Ha ocurrido un error'
+    };
+  }
+}
 
 const RestartPasswordForm = () => {
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
+
   const fields = [
-    { name: 'email', type: 'email', label: 'Email', required: true },
+    { 
+      name: 'email', 
+      type: 'email', 
+      label: 'Email', 
+      required: true,
+    },
   ];
 
-  const handleSubmit = (data: Record<string, any>) => {
-    console.log('Reset Password Data:', data);
+  const handleSubmit = async (data: Record<string, any>) => {
+    setLoading(true);
+    setMessage(null);
+    
+    try {
+      const result = await verifyEmailAndSendLink(data.email);
+      
+      setMessage({
+        text: result.message,
+        type: result.success ? 'success' : 'error'
+      });
+    } catch (error) {
+      setMessage({
+        text: 'Ha ocurrido un error. Por favor, intenta nuevamente.',
+        type: 'error'
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  return <BaseForm fields={fields} title="¿Olvidaste tu contraseña?" submitText="Send Reset Link" onSubmit={handleSubmit} />;
+  return (
+    <div className="space-y-4">
+      <BaseForm 
+        fields={fields} 
+        title="¿Olvidaste tu contraseña?" 
+        submitText={loading ? "Enviando..." : "Recuperar contraseña"}
+        onSubmit={handleSubmit}
+        additionalContent={message && (
+          <div className={`text-center ${message.type === 'error' ? 'text-red-500' : 'text-green-500'}`}>
+            <p>{message.text}</p>
+          </div>
+        )}
+      />
+    </div>
+  );
 };
 
 export default RestartPasswordForm;

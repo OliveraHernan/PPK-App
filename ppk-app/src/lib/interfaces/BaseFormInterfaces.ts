@@ -11,7 +11,7 @@ export interface Field {
   
   export interface BaseFormProps {
     title?: string;
-    fields: Field[];
+    fields?: Field[];
     submitText?: string;
     validationSchema?: ZodSchema; // Schema for validation
     onSubmit: (data: Record<string, string>) => void;

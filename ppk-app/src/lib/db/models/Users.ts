@@ -2,32 +2,21 @@ import mongoose, { Schema, Document } from 'mongoose';
 
 // Interface para el documento User
 interface User extends Document {
-  firstName: string;
-  lastName: string;
-  dateOfBirth: Date;
+  nombreYapellido: string;
   registrationDate: Date;
   email: string;
-  password: string;
+  contraseña: string;
   token?: string; // Opcional, para manejo de autenticación temporal
-  roles: string[]; // Roles como 'admin', 'facilitator', 'participant'
+  position: string[];
   isActive: boolean; // Para deshabilitar usuarios si es necesario
 }
 
 // Esquema de Mongoose
 const UserSchema = new Schema<User>({
-  firstName: {
+  nombreYapellido: {
     type: String,
     required: true,
     trim: true,
-  },
-  lastName: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-  dateOfBirth: {
-    type: Date,
-    required: true,
   },
   registrationDate: {
     type: Date,
@@ -44,7 +33,7 @@ const UserSchema = new Schema<User>({
       'Please provide a valid email address',
     ],
   },
-  password: {
+  contraseña: {
     type: String,
     required: true,
   },
@@ -52,10 +41,9 @@ const UserSchema = new Schema<User>({
     type: String,
     default: null,
   },
-  roles: {
+  position: {
     type: [String],
-    enum: ['admin', 'facilitator', 'participant'],
-    default: ['participant'],
+    default: null,
   },
   isActive: {
     type: Boolean,
