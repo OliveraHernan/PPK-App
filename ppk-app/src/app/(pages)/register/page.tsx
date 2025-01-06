@@ -2,6 +2,7 @@
 import BaseForm from '@/src/components/forms/Base/BaseForm';
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { Linkedin, Twitter, Facebook } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 const RegisterForm = () => {
@@ -83,21 +84,21 @@ const RegisterForm = () => {
       )}
       
       <div className="text-center space-y-4">
-        <div className="text-sm text-gray-500">o continua con</div>
+        <div className="text-sm text-white">o continua con</div>
         
         <div className="flex justify-center space-x-4">
-          <button type="button" className="p-2 border rounded-lg hover:bg-gray-50">
-            <img src="/google-icon.svg" alt="Google" className="w-6 h-6" />
+          <button className="bg-white hover:bg-gray-300 p-2 border rounded-lg">
+            <Linkedin />
           </button>
-          <button type="button" className="p-2 border rounded-lg hover:bg-gray-50">
+          <button className="p-2 border rounded-lg hover:bg-gray-50">
             <img src="/x-icon.svg" alt="X" className="w-6 h-6" />
           </button>
-          <button type="button" className="p-2 border rounded-lg hover:bg-gray-50">
+          <button className="p-2 border rounded-lg hover:bg-gray-50">
             <img src="/facebook-icon.svg" alt="Facebook" className="w-6 h-6" />
           </button>
         </div>
 
-        <div className="text-sm text-gray-600">
+        <div className="text-sm text-white">
           ¿Ya tienes una cuenta?{' '}
           <Link 
             href="/"
