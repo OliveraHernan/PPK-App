@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import BaseForm from '@/src/components/forms/Base/BaseForm';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { Linkedin, Twitter, Facebook } from 'lucide-react';
 
 const LoginForm: React.FC = () => {
   const [status, setStatus] = useState<{ type: 'error' | 'success' | null; message: string }>({ type: null, message: '' });
@@ -56,13 +57,13 @@ const LoginForm: React.FC = () => {
 
         <div className="flex justify-center space-x-4">
           <button className="p-2 border rounded-lg hover:bg-gray-50">
-            <img src="/google-icon.svg" alt="Google" className="w-6 h-6" />
+            <Linkedin />
           </button>
           <button className="p-2 border rounded-lg hover:bg-gray-50">
-            <img src="/x-icon.svg" alt="X" className="w-6 h-6" />
+            <Twitter />
           </button>
           <button className="p-2 border rounded-lg hover:bg-gray-50">
-            <img src="/facebook-icon.svg" alt="Facebook" className="w-6 h-6" />
+            <Facebook />
           </button>
         </div>
 

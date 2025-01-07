@@ -91,10 +91,10 @@ const RegisterForm = () => {
             <Linkedin />
           </button>
           <button className="p-2 border rounded-lg hover:bg-gray-50">
-            <img src="/x-icon.svg" alt="X" className="w-6 h-6" />
+            <Twitter />
           </button>
           <button className="p-2 border rounded-lg hover:bg-gray-50">
-            <img src="/facebook-icon.svg" alt="Facebook" className="w-6 h-6" />
+            <Facebook />
           </button>
         </div>
 

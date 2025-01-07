@@ -6,7 +6,8 @@ import { Input } from '../../ui/input';
 import { Label } from '@radix-ui/react-label';
 import { BaseFormProps } from '@/src/lib/interfaces/BaseFormInterfaces';
 import  Img  from 'next/image';
-import '/src/styles/style.css'interface ExtendedBaseFormProps extends BaseFormProps {
+import '/src/styles/style.css'
+interface ExtendedBaseFormProps extends BaseFormProps {
   children?: React.ReactNode;
 }
 
