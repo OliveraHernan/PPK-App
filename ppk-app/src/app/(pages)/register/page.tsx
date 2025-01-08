@@ -87,13 +87,13 @@ const RegisterForm = () => {
         <div className="text-sm text-white">o continua con</div>
         
         <div className="flex justify-center space-x-4">
-          <button className="bg-white hover:bg-gray-300 p-2 border rounded-lg">
+          <button className="bg-white hover:bg-gray-300 p-2 border rounded-lg text-gray-800">
             <Linkedin />
           </button>
-          <button className="bg-white hover:bg-gray-300 p-2 border rounded-lg">
+          <button className="bg-white hover:bg-gray-300 p-2 border rounded-lg text-gray-800">
             <Twitter />
           </button>
-          <button className="bg-white hover:bg-gray-300 p-2 border rounded-lg">
+          <button className="bg-white hover:bg-gray-300 p-2 border rounded-lg text-gray-800">
             <Facebook />
           </button>
         </div>

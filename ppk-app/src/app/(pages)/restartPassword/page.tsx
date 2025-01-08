@@ -89,7 +89,7 @@ const RestartPasswordForm = () => {
         submitText={loading ? "Enviando..." : "Recuperar contraseña"}
         onSubmit={handleSubmit}
         additionalContent={message && (
-          <div className={`text-center ${message.type === 'error' ? 'text-red-500' : 'text-green-500'}`}>
+          <div className={`text-center font-bold drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,1)] ${message.type === 'error' ? 'text-red-500' : 'text-green-500'}`}>
             <p>{message.text}</p>
           </div>
         )}

@@ -20,7 +20,7 @@ const ConfirmPassword: React.FC = () => {
   // El contenido principal del formulario, incluyendo el mensaje de éxito
   const mainContent = (
     <>
-      <div className="text-center mb-6">
+      <div className="text-center mb-6 text-white font-bold">
         <p>Su contraseña ha sido actualizada con éxito</p>
       </div>
     </>
