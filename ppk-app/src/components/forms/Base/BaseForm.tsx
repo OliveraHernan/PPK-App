@@ -7,8 +7,12 @@ import { Label } from '@radix-ui/react-label';
 import { BaseFormProps } from '@/src/lib/interfaces/BaseFormInterfaces';
 import  Img  from 'next/image';
 import '/src/styles/style.css'
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+
 interface ExtendedBaseFormProps extends BaseFormProps {
   children?: React.ReactNode;
+  validationSchema?: any;
 }
 
 const BaseForm: React.FC<ExtendedBaseFormProps> = ({
@@ -21,6 +25,7 @@ const BaseForm: React.FC<ExtendedBaseFormProps> = ({
   isLoading = false,
   additionalContent,
   children,
+  validationSchema,
 }) => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -31,6 +36,7 @@ const BaseForm: React.FC<ExtendedBaseFormProps> = ({
     });
     onSubmit(data);
   };
+  
 
   return (
     <div className='bg-[#7800de] min-h-screen flex items-center justify-center relative'>
