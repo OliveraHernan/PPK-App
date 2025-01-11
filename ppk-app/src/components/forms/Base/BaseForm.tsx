@@ -1,5 +1,5 @@
 "use client";
-import React, { FormEvent } from 'react';
+import React, { FormEvent, useState } from 'react';
 import { Button } from '../../ui/button';
 import { Card } from '../../ui/card';
 import { Input } from '../../ui/input';
@@ -22,14 +22,21 @@ const BaseForm: React.FC<ExtendedBaseFormProps> = ({
   additionalContent,
   children,
 }) => {
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError(null); // Limpiar error anterior
     const formData = new FormData(e.currentTarget);
     const data: Record<string, string> = {};
     fields.forEach((field) => {
       data[field.name] = formData.get(field.name) as string;
     });
-    onSubmit(data);
+    try {
+      onSubmit(data);
+    } catch (err: any) {
+      setError(err.message || 'Ha ocurrido un error');
+    }
   };
 
   return (
@@ -74,6 +81,12 @@ const BaseForm: React.FC<ExtendedBaseFormProps> = ({
             
             {additionalContent && (
               <div className="mt-6">{additionalContent}</div>
+            )}
+
+            {error && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                <span className="block sm:inline">{error}</span>
+              </div>
             )}
           </form>
         </Card>

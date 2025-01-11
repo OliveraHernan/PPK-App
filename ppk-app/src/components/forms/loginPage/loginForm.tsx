@@ -24,7 +24,7 @@ const LoginForm: React.FC = () => {
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || 'Error al iniciar sesión');
+        throw new Error(result.error);
       }
 
       // Almacenar el token JWT en el almacenamiento local
@@ -35,9 +35,8 @@ const LoginForm: React.FC = () => {
       setTimeout(() => {
         router.push('/dashboard');
       }, 2000);
-    } catch (error) {
-      console.error('Error completo:', error);
-      setStatus({ type: 'error', message: error instanceof Error ? error.message : 'Error desconocido' });
+    } catch (error: any) {
+      throw new Error(error.message);
     }
   };
 

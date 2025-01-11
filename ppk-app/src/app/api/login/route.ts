@@ -12,12 +12,18 @@ export async function POST(request: Request) {
 
     const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) {
-      return NextResponse.json({ error: 'Email o contraseña incorrectos' }, { status: 401 });
+      return NextResponse.json(
+        { error: 'Email o contraseña incorrectos' }, 
+        { status: 401 }
+      );
     }
 
     const isPasswordValid = await bcrypt.compare(contraseña, user.contraseña);
     if (!isPasswordValid) {
-      return NextResponse.json({ error: 'Email o contraseña incorrectos' }, { status: 401 });
+      return NextResponse.json(
+        { error: 'Email o contraseña incorrectos' }, 
+        { status: 401 }
+      );
     }
 
     const token = await generateToken({
@@ -29,6 +35,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ token });
   } catch (error: any) {
     console.error('Error en POST /api/auth/login:', error.message);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Error al iniciar sesión. Por favor, intente nuevamente.' }, 
+      { status: 500 }
+    );
   }
 }
