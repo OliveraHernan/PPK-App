@@ -8,15 +8,13 @@ import { useAuthStore } from '@/src/lib/stores/authStore';
 import { Roles } from '@/src/lib/utils/roles';
 
 const LoginForm: React.FC = () => {
-  const [status, setStatus] = useState<{ type: 'error' | 'success' | null; message: string }>({ type: null, message: '' });
+  const { setAuth } = useAuthStore();
   const router = useRouter();
-  const setAuth = useAuthStore((state: { setAuth: any; }) => state.setAuth);
-
+  const [status, setStatus] = useState<{ type: string | null; message: string }>({ type: null, message: '' });
   const handleLogin = async (data: Record<string, string>) => {
     try {
       setStatus({ type: null, message: '' });
 
-  
       const response = await fetch('/api/login', {
         method: 'POST',
         headers: {
@@ -24,14 +22,13 @@ const LoginForm: React.FC = () => {
         },
         body: JSON.stringify(data),
       });
-  
+
       const result = await response.json();
 
-  
       if (response.ok) {
-        setAuth(result.token, Roles.ADMIN); // Establecer el token y el rol
-        document.cookie = `token=${result.token}; path=/`;
-        document.cookie = `role=${Roles.ADMIN}; path=/`; // Almacenar el rol en las cookies
+        setAuth(result.token, Roles.ADMIN); // Establecer el token y el rol en el store
+        localStorage.setItem('token', result.token);
+        localStorage.setItem('role', Roles.ADMIN);
         router.push('/dashboard');
       } else {
         throw new Error(result.error || 'Error al iniciar sesión');
