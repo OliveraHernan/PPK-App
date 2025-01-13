@@ -20,7 +20,7 @@ El Planning Poker es una técnica ampliamente utilizada en metodologías ágiles
 ## 3. Arquitectura de la aplicación
 Esta arquitectura organiza una aplicación **Next.js** de forma modular y reutilizable, dividiendo responsabilidades por áreas funcionales para facilitar el desarrollo, mantenimiento y escalabilidad. Aquí está el desglose de cada carpeta y su propósito:
 
-
+```
 ├── /components
 │   ├── /forms          // Formularios reutilizables (ShadCN + Tailwind)
 │   ├── /modals         // Modales reutilizables para confirmaciones o acciones
@@ -43,7 +43,7 @@ Esta arquitectura organiza una aplicación **Next.js** de forma modular y reutil
 ├── /hooks              // Custom hooks para estado y lógica compartida
 └── tailwind.config.js  // Configuración de Tailwind CSS
 
-
+```
 
 ## 4. Dependencias Clave
 ### 1. Core del Proyecto
