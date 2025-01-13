@@ -82,7 +82,6 @@ export async function POST(request: Request) {
       nombreYapellido: body.nombreYapellido,
       email: body.email.toLowerCase(),
       contraseña: hashedPassword,
-      position: Array.isArray(body.posicion) ? body.posicion : [body.posicion],
       isActive: true
     });
 

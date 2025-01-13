@@ -4,15 +4,19 @@ import BaseForm from '@/src/components/forms/Base/BaseForm';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Linkedin, Twitter, Facebook } from 'lucide-react';
+import { useAuthStore } from '@/src/lib/stores/authStore';
+import { Roles } from '@/src/lib/utils/roles';
 
 const LoginForm: React.FC = () => {
   const [status, setStatus] = useState<{ type: 'error' | 'success' | null; message: string }>({ type: null, message: '' });
   const router = useRouter();
+  const setAuth = useAuthStore((state: { setAuth: any; }) => state.setAuth);
 
   const handleLogin = async (data: Record<string, string>) => {
     try {
       setStatus({ type: null, message: '' });
 
+  
       const response = await fetch('/api/login', {
         method: 'POST',
         headers: {
@@ -20,21 +24,18 @@ const LoginForm: React.FC = () => {
         },
         body: JSON.stringify(data),
       });
-
+  
       const result = await response.json();
 
-      if (!response.ok) {
+  
+      if (response.ok) {
+        setAuth(result.token, Roles.ADMIN); // Establecer el token y el rol
+        document.cookie = `token=${result.token}; path=/`;
+        document.cookie = `role=${Roles.ADMIN}; path=/`; // Almacenar el rol en las cookies
+        router.push('/dashboard');
+      } else {
         throw new Error(result.error || 'Error al iniciar sesión');
       }
-
-      // Almacenar el token JWT en el almacenamiento local
-      localStorage.setItem('token', result.token);
-
-      setStatus({ type: 'success', message: '¡Inicio de sesión exitoso! Redirigiendo...' });
-
-      setTimeout(() => {
-        router.push('/dashboard');
-      }, 2000);
     } catch (error) {
       console.error('Error completo:', error);
       setStatus({ type: 'error', message: error instanceof Error ? error.message : 'Error desconocido' });
