@@ -21,14 +21,15 @@ interface Session extends Document {
   startDate: Date;
   endDate?: Date;
   duration: number;
-  status: 'scheduled' | 'active' | 'completed';
+  status: 'active' | 'inactive';
   facilitator: Schema.Types.ObjectId;
   participants: Schema.Types.ObjectId[];
-  estimationType: 'fibonacci' | 'tshirt' | 'custom';
-  customEstimationValues?: (number | string)[];
-  visibility: 'private' | 'public';
+  estimationType: 'fibonacci' | 'tshirt';
+  visibility: boolean;
   accessCode?: string;
   userStories: UserStory[];
+  createdBy: Schema.Types.ObjectId;
+  isActive: boolean;
 }
 
 // Esquemas
@@ -73,8 +74,6 @@ const UserStorySchema = new Schema({
     type: Schema.Types.Mixed,
     default: null
   }
-}, {
-  timestamps: true
 });
 
 const SessionSchema = new Schema({
@@ -97,8 +96,12 @@ const SessionSchema = new Schema({
   },
   status: {
     type: String,
-    enum: ['scheduled', 'active', 'completed'],
-    default: 'scheduled'
+    enum: ['active', 'inactive'],
+    default: 'active'
+  },
+  visibility: {
+    type: Boolean,
+    default: true
   },
   facilitator: {
     type: Schema.Types.ObjectId,
@@ -111,29 +114,35 @@ const SessionSchema = new Schema({
   }],
   estimationType: {
     type: String,
-    enum: ['fibonacci', 'tshirt', 'custom'],
+    enum: ['fibonacci', 'tshirt'],
     default: 'fibonacci'
   },
   customEstimationValues: [{
     type: Schema.Types.Mixed
   }],
-  visibility: {
-    type: String,
-    enum: ['private', 'public'],
-    default: 'private'
-  },
   accessCode: {
     type: String,
     sparse: true
   },
-  userStories: [UserStorySchema]
+  userStories: [UserStorySchema],
+  createdBy: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  isActive: {
+    type: Boolean,
+    default: true
+  }
 }, {
   timestamps: true,
   toJSON: { virtuals: true },
   toObject: { virtuals: true }
 });
 
-// Índices
+// Add new indices
+SessionSchema.index({ createdBy: 1 });
+SessionSchema.index({ isActive: 1 });
 SessionSchema.index({ name: 1 });
 SessionSchema.index({ status: 1 });
 SessionSchema.index({ facilitator: 1 });
