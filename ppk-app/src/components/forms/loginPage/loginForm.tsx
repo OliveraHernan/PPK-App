@@ -3,8 +3,7 @@ import React, { useState } from 'react';
 import BaseForm from '@/src/components/forms/Base/BaseForm';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Linkedin, Twitter, Facebook, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Linkedin, Twitter, Facebook, Loader2 } from 'lucide-react';
 
 const LoginForm: React.FC = () => {
   const [status, setStatus] = useState<{ type: 'error' | 'success' | null; message: string }>({ type: null, message: '' });
@@ -54,30 +53,21 @@ const LoginForm: React.FC = () => {
     { name: 'contraseña', type: 'password', label: 'Contraseña', required: true },
   ];
 
-  const StatusAlert = () => {
-    if (!status.message) return null;
+  const StatusMessage = () => {
+    if (!status.type) return null;
 
-    if (status.type === 'error') {
-      return (
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Error</AlertTitle>
-          <AlertDescription>{status.message}</AlertDescription>
-        </Alert>
-      );
-    }
-
-    if (status.type === 'success') {
-      return (
-        <Alert>
-          <CheckCircle2 className="h-4 w-4" />
-          <AlertTitle>Éxito</AlertTitle>
-          <AlertDescription>{status.message}</AlertDescription>
-        </Alert>
-      );
-    }
-
-    return null;
+    return (
+      <div 
+        className={`text-center p-3 rounded-lg ${
+          status.type === 'error' 
+            ? 'bg-red-100 text-red-700' 
+            : 'bg-green-100 text-green-700'
+        }`}
+        role="alert"
+      >
+        {status.message}
+      </div>
+    );
   };
 
   const loginAdditionalContent = (
@@ -86,7 +76,7 @@ const LoginForm: React.FC = () => {
         ¿Olvidaste tu contraseña?
       </Link>
 
-      {status.message && <StatusAlert />}
+      {status.type && <StatusMessage />}
 
       <div className="text-center space-y-4">
         <div className="text-sm text-white">o continua con</div>
