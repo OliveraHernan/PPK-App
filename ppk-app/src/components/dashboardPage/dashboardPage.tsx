@@ -93,22 +93,10 @@ const DashboardPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle,#EF834C_0%,#510096_100%)] p-6">
-      {/* Header */}
-      <div className="flex justify-between items-rigth mb-8">
-        <div className="flex items-rigth gap-4">
-          <div className="w-12 h-12 bg-primary/20 rounded-lg backdrop-blur-sm" />
-        </div>
-        <div className="flex items-rigth gap-4">
-          <span className="text-white">Alberto Vera</span>
-          <div className="w-10 h-10 rounded-full bg-white" />
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="w-full rounded-2xl overflow-hidden backdrop-blur-md bg-gradient-to-br from-primary/20 to-secondary/20 border border-white/10">
+    <div className="h-[100%]">
+      <div className="w-[1189px] mx-auto my-auto  rounded-lg overflow-hidden bg-[#5882C147] backdrop-blur-md border border-white/10">
         {/* Action Bar */}
-        <div className="p-4 flex items-center justify-between backdrop-blur-sm border-b border-white/10">
+        <div className="p-4 flex items-center justify-between border-b border-white/10">
           <h2 className="text-white text-lg">Listado de sesiones</h2>
           <div className="flex gap-2">
             <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white text-sm">
