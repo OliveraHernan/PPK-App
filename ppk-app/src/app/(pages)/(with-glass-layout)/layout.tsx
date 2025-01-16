@@ -24,8 +24,8 @@ export default function DashboardLayout({
 
       {/* Main Content Area */}
       <main className="flex justify-center">
-        <div className="w-[1366px] h-[768px] rounded-tl-[24px]">
-          <div className="  mx-auto my-auto rounded-lg overflow-hidden bg-[#5882C147] backdrop-blur-md border border-white/10">
+        <div className="w-[1366px] h-[768px] rounded-tl-[24px]  ">
+          <div className=" d-flex my-auto mx-auto   rounded-lg overflow-hidden bg-[#5882C147] backdrop-blur-md border border-white/10">
             {children}
           </div>
         </div>
