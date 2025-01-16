@@ -6,12 +6,12 @@ const loginSchema = z.object({
   password: z.string().min(1, '* Contraseña requerida'),
 });
 
-const registerSchema = z.object({
+export const registerSchema = z.object({
   email: z.string().email('* Ingrese un email valido'),
   nombreApellido: z.string().min(1, '* Nombre y apellido requerido')
   .max(30, '* El nombre y apellido debe tener menos de 30 caracteres'),
-  contraseña: z.string().min(6, '* La contraseña debe tener al menos 6 caracteres')
-  .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/, '* La contraseña debe contener al menos una letra mayúscula, una letra minúscula y un número'),
+  contraseña: z.string().min(6, '* La contraseña debe tener al menos 6 caracteres'),
+  // .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/, '* La contraseña debe contener al menos una letra mayúscula, una letra minúscula y un número'),
   posicion: z.string().min(1, 'Posicion requerida'),
 });
 

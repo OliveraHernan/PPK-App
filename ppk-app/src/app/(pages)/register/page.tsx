@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { Linkedin, Twitter, Facebook } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { registerSchema } from '@/src/lib/validators/auth';
 
 const RegisterForm = () => {
   const [status, setStatus] = useState<{
@@ -115,9 +116,11 @@ const RegisterForm = () => {
     <BaseForm 
       fields={fields} 
       title="" 
-      submitText="Unirme" 
+      submitText="Registrarse" 
       onSubmit={handleSubmit}
       additionalContent={registerAdditionalContent}
+      validationSchema={registerSchema}
+      useValidation={true} 
     />
   );
 };
