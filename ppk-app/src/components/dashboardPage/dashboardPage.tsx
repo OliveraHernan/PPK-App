@@ -1,7 +1,29 @@
-import React from 'react';
+"use client"
+import { useEffect, useState } from 'react'
 import { Trash2, Download, Plus, UserPlus } from 'lucide-react';
-
+import { DataSession } from '@/src/lib/interfaces/SessionInterface';
+import  Link  from 'next/link';
 const DashboardPage = () => {
+  const [sessions, setSessions] = useState<DataSession[]>([]);
+
+  useEffect(() => {
+    const fetchSessions = async () => {
+      try {
+        const response = await fetch('/api/sessions');
+        const data: DataSession[] = await response.json();
+        setSessions(data);
+      } catch (error) {
+        console.error('Error fetching sessions:', error);
+      }
+    }
+
+    fetchSessions();
+  },[]);
+
+
+
+
+
   return (
     <div className="min-h-screen bg-primary p-6">
       {/* Header */}
@@ -30,12 +52,16 @@ const DashboardPage = () => {
               Exportar
             </button>
             <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-white text-sm">
-              <Plus className="w-4 h-4" />
-              Crear nueva sala
+              <Link href="#" onClick={() => {console.log('Crear nueva sala')}}>
+                <Plus className="w-4 h-4" />
+                Crear nueva sala
+              </Link>
             </button>
             <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-white text-sm">
-              <UserPlus className="w-4 h-4" />
-              Unirse a sala
+              <Link href="#" onClick={() => {console.log('Crear nueva sala')}}>
+                <UserPlus className="w-4 h-4" />
+                Unirse a sala
+              </Link>
             </button>
           </div>
         </div>
@@ -44,7 +70,17 @@ const DashboardPage = () => {
         <div className="p-6">
           {/* Add your session list content here */}
           <div className="text-white/60 text-center py-12">
-            No hay sesiones disponibles
+            <ul>
+              {sessions.map((session) => (
+                <li key={session._id} className="py-2 border-b border-white/10">
+                  <span>{session.name}</span>
+                  <span>{session.duration}</span>
+                  <span>{session.userStories}</span>
+                  <span>{session.updatedAt}</span>
+                  <span>{session.status}</span>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </div>
