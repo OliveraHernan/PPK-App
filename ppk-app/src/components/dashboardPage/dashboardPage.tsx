@@ -10,8 +10,8 @@ const DashboardPage = () => {
     const fetchSessions = async () => {
       try {
         const response = await fetch('/api/sessions');
-        const data: DataSession[] = await response.json();
-        setSessions(data);
+        const data: {sessions: DataSession[]} = await response.json();
+        setSessions(data.sessions);
       } catch (error) {
         console.error('Error fetching sessions:', error);
       }
@@ -75,9 +75,9 @@ const DashboardPage = () => {
                 <li key={session._id} className="py-2 border-b border-white/10">
                   <span>{session.name}</span>
                   <span>{session.duration}</span>
-                  <span>{session.userStories}</span>
                   <span>{session.updatedAt}</span>
                   <span>{session.status}</span>
+                  <span>{session.userStories.length}</span>
                 </li>
               ))}
             </ul>

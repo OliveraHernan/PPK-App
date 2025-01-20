@@ -1,18 +1,29 @@
-
-export interface DataSession{
-    _id: string,
-    name: string,
-    startDate: string,
-    duration: number,
-    status: string,
-    facilitator: string,
-    participants: string[],
-    estimationType: string,
-    customEstimationValues?: (number | string)[],
-    visibility: string,
-    accessCode?: string,
-    userStories: string[],
-    createdAt: string,
-    updatedAt: string,
-    __v: number
-}
+export interface DataSession {
+    _id: string;
+    name: string;
+    startDate: string;
+    endDate: string;
+    duration: number;
+    status: string;
+    visibility: string;
+    facilitator: string;
+    participants: string[];
+    estimationType: string;
+    customEstimationValues: any[];
+    accessCode: string;
+    userStories: {
+      title: string;
+      description: string;
+      priority: string;
+      status: string;
+      votes: any[];
+      finalEstimation: any;
+      _id: string;
+    }[];
+    createdBy: string;
+    isActive: boolean;
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+    id: string;
+  }
