@@ -1,96 +1,53 @@
 "use client";
-import React from "react";
-import {
-  Trash2,
-  Download,
-  Plus,
-  UserPlus,
-  MoreVertical,
-  Link,
-  LogIn,
-} from "lucide-react";
-
-interface Session {
-  id: number;
-  name: string;
-  duration: string;
-  storiesCount: number;
-  lastModified: string;
-  status: "Activo" | "Inactivo";
-}
-
-const mockSessions: Session[] = [
-  {
-    id: 1,
-    name: "Sesión 1",
-    duration: "20 minutos",
-    storiesCount: 4,
-    lastModified: "Ayer",
-    status: "Activo",
-  },
-  {
-    id: 2,
-    name: "Sesión 2",
-    duration: "1 hora",
-    storiesCount: 1,
-    lastModified: "1 semana",
-    status: "Activo",
-  },
-  {
-    id: 3,
-    name: "Sesión 3",
-    duration: "6 minutos",
-    storiesCount: 5,
-    lastModified: "1 semana",
-    status: "Inactivo",
-  },
-  {
-    id: 4,
-    name: "Sesión 4",
-    duration: "47 minutos",
-    storiesCount: 6,
-    lastModified: "2 meses",
-    status: "Activo",
-  },
-  {
-    id: 5,
-    name: "Sesión 5",
-    duration: "1:30 minutos",
-    storiesCount: 7,
-    lastModified: "5 meses",
-    status: "Inactivo",
-  },
-  {
-    id: 6,
-    name: "Sesión 6",
-    duration: "3 minutos",
-    storiesCount: 9,
-    lastModified: "3 años",
-    status: "Activo",
-  },
-];
+import { useState , useEffect, ChangeEvent} from "react";
+import { Trash2, Download, Plus, UserPlus, MoreVertical, Link, LogIn} from "lucide-react";
+import { DataSession } from "@/src/lib/interfaces/SessionInterface";
+import { Button } from "../ui/button";
 
 const DashboardPage = () => {
-  const [selectedSessions, setSelectedSessions] = React.useState<number[]>([]);
-  const [openActionMenu, setOpenActionMenu] = React.useState<number | null>(
+  const [sessions, setSessions] = useState<DataSession[]>([]);
+  const [selectedSessions, setSelectedSessions] = useState<string[]>([]);
+  const [openActionMenu, setOpenActionMenu] = useState<string | null>(
     null
   );
 
-  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.checked) {
-      setSelectedSessions(mockSessions.map((s) => s.id));
-    } else {
-      setSelectedSessions([]);
-    }
-  };
+  useEffect(() => {
+    const fetchSessions = async () => {
+      try {
+        const response = await fetch("/api/sessions");
+        const data:{ sessions: DataSession[] } = await response.json();
+        setSessions(data.sessions);
+      } catch (error) {
+        console.log("Error al obtener las sesiones:", error);
+      }
+    };
 
-  const handleSelectSession = (id: number) => {
-    if (selectedSessions.includes(id)) {
-      setSelectedSessions(selectedSessions.filter((s) => s !== id));
-    } else {
-      setSelectedSessions([...selectedSessions, id]);
-    }
-  };
+    fetchSessions();
+  }, []);
+
+   const handleSelectAll = (e: ChangeEvent<HTMLInputElement>) => {
+     if (e.target.checked) {
+       setSelectedSessions(sessions.map((s) => s._id));
+     } else {
+       setSelectedSessions([]);
+     }
+   };
+
+   const handleSelectSession = (id: string) => {
+     if (selectedSessions.includes(id)) {
+       setSelectedSessions(selectedSessions.filter((s) => s !== id));
+     } else {
+       setSelectedSessions([...selectedSessions, id]);
+     }
+   };
+
+   const changeVisibility = () =>{
+
+   }
+
+   const downloadDocument = () =>{
+
+   }
 
   return (
     <>
@@ -98,22 +55,24 @@ const DashboardPage = () => {
       <div className="p-4 flex items-center justify-between border-b border-white/10">
         <h2 className="text-white text-lg">Listado de sesiones</h2>
         <div className="flex gap-2">
-          <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white text-sm">
+          <Button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white text-sm"
+          onClick={changeVisibility}>
             <Trash2 className="w-4 h-4" />
             Borrar
-          </button>
-          <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white text-sm">
+          </Button>
+          <Button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white text-sm"
+          onClick={downloadDocument}>
             <Download className="w-4 h-4" />
             Exportar
-          </button>
-          <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-white text-sm">
+          </Button>
+          <Button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-white text-sm">
             <Plus className="w-4 h-4" />
             Crear nueva sala
-          </button>
-          <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-white text-sm">
+          </Button>
+          <Button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-white text-sm">
             <UserPlus className="w-4 h-4" />
             Unirse a sala
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -125,38 +84,38 @@ const DashboardPage = () => {
               <th className="pb-4 text-left">
                 <input
                   type="checkbox"
-                  onChange={handleSelectAll}
-                  checked={selectedSessions.length === mockSessions.length}
+                   onChange={handleSelectAll}
+                   checked={selectedSessions.length === sessions.length}
                   className="rounded border-white/30"
                 />
               </th>
-              <th className="pb-4 text-left">Nombre</th>
-              <th className="pb-4 text-left">Duración total</th>
-              <th className="pb-4 text-left">Número total de historias</th>
-              <th className="pb-4 text-left">Última modificación</th>
-              <th className="pb-4 text-left">Estado</th>
-              <th className="pb-4 text-left"></th>
+              <th className="pb-4">Nombre</th>
+              <th className="pb-4">Duración total</th>
+              <th className="pb-4">Número total de historias</th>
+              <th className="pb-4">Última modificación</th>
+              <th className="pb-4">Estado</th>
+              <th className="pb-4"></th>
             </tr>
           </thead>
           <tbody>
-            {mockSessions.map((session) => (
-              <tr key={session.id} className="border-b border-white/10">
+            {sessions.map((session) => (
+              <tr key={session._id} className="border-b border-white/10">
                 <td className="py-4">
                   <input
                     type="checkbox"
-                    checked={selectedSessions.includes(session.id)}
-                    onChange={() => handleSelectSession(session.id)}
+                     checked={selectedSessions.includes(session._id)}
+                     onChange={() => handleSelectSession(session._id)}
                     className="rounded border-white/30"
                   />
                 </td>
-                <td className="py-4">{session.name}</td>
-                <td className="py-4">{session.duration}</td>
-                <td className="py-4">{session.storiesCount}</td>
-                <td className="py-4">{session.lastModified}</td>
-                <td className="py-4">
+                <td className="py-4 text-center">{session.name}</td>
+                <td className="py-4 text-center">{session.duration}</td>
+                <td className="py-4 text-center">{session.userStories.length}</td>
+                <td className="py-4 text-center">{session.updatedAt}</td>
+                <td className="py-4 text-center">
                   <span
                     className={`px-2 py-1 rounded-full text-xs ${
-                      session.status === "Activo"
+                      session.status === "active"
                         ? "bg-green-500/20 text-green-500"
                         : "bg-gray-500/20 text-gray-400"
                     }`}
@@ -168,14 +127,14 @@ const DashboardPage = () => {
                   <button
                     onClick={() =>
                       setOpenActionMenu(
-                        openActionMenu === session.id ? null : session.id
+                        openActionMenu === session._id ? null : session._id
                       )
                     }
                     className="p-1 hover:bg-white/10 rounded"
                   >
                     <MoreVertical className="w-4 h-4" />
                   </button>
-                  {openActionMenu === session.id && (
+                  {openActionMenu === session._id && (
                     <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
                       <div className="py-1">
                         <button className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full">
