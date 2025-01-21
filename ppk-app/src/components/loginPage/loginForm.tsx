@@ -4,6 +4,7 @@ import BaseForm from '@/src/components/forms/Base/BaseForm';
 import Link from 'next/link';
 import { Linkedin, Twitter, Facebook } from 'lucide-react';
 
+
 const LoginForm: React.FC = () => {
   const handleLogin = (data: Record<string, string>) => {
     console.log('Login Data:', data);

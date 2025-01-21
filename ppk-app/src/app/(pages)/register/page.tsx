@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { Linkedin, Twitter, Facebook } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { registerSchema } from '@/src/lib/validators/auth';
 
 const RegisterForm = () => {
   const [status, setStatus] = useState<{
@@ -87,13 +88,13 @@ const RegisterForm = () => {
         <div className="text-sm text-white">o continua con</div>
         
         <div className="flex justify-center space-x-4">
-          <button className="bg-white hover:bg-gray-300 p-2 border rounded-lg">
+          <button className="bg-white hover:bg-gray-300 p-2 border rounded-lg text-gray-800">
             <Linkedin />
           </button>
-          <button className="bg-white hover:bg-gray-300 p-2 border rounded-lg">
+          <button className="bg-white hover:bg-gray-300 p-2 border rounded-lg text-gray-800">
             <Twitter />
           </button>
-          <button className="bg-white hover:bg-gray-300 p-2 border rounded-lg">
+          <button className="bg-white hover:bg-gray-300 p-2 border rounded-lg text-gray-800">
             <Facebook />
           </button>
         </div>
@@ -115,9 +116,11 @@ const RegisterForm = () => {
     <BaseForm 
       fields={fields} 
       title="" 
-      submitText="Unirme" 
+      submitText="Registrarse" 
       onSubmit={handleSubmit}
       additionalContent={registerAdditionalContent}
+      validationSchema={registerSchema}
+      useValidation={true} 
     />
   );
 };
