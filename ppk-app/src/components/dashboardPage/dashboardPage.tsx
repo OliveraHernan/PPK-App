@@ -3,6 +3,7 @@ import { useState , useEffect, ChangeEvent} from "react";
 import { Trash2, Download, Plus, UserPlus, MoreVertical, Link, LogIn} from "lucide-react";
 import { DataSession } from "@/src/lib/interfaces/SessionInterface";
 import { Button } from "../ui/button";
+import { set } from "mongoose";
 
 const DashboardPage = () => {
   const [sessions, setSessions] = useState<DataSession[]>([]);
@@ -17,6 +18,7 @@ const DashboardPage = () => {
         const response = await fetch("/api/sessions");
         const data:{ sessions: DataSession[] } = await response.json();
         setSessions(data.sessions);
+        console.log("Sesiones obtenidas:", data.sessions);
       } catch (error) {
         console.log("Error al obtener las sesiones:", error);
       }
@@ -24,6 +26,29 @@ const DashboardPage = () => {
 
     fetchSessions();
   }, []);
+
+
+  const updatedSession = async (id: string, change: string) => {
+    try {
+      const response = await fetch(`/api/sessions/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ visibility: change }),
+      });
+      if (!response.ok) {
+        throw new Error('Error al actualizar la sesión');
+      }
+      const updatedData: DataSession = await response.json();
+      setSessions((prevSessions) =>
+        prevSessions.map((session) => (session._id === id ? updatedData : session))
+      );
+    } catch (error) {
+      console.log("Error al actualizar la sesión:", error);
+    }
+  };
+
 
    const handleSelectAll = (e: ChangeEvent<HTMLInputElement>) => {
      if (e.target.checked) {
@@ -42,6 +67,11 @@ const DashboardPage = () => {
    };
 
    const changeVisibility = () =>{
+    for (let selected = 0; selected < selectedSessions.length; selected++) {
+      console.log("Sesiones seleccionadas:", selectedSessions[selected]);
+      const id = selectedSessions[selected];
+      updatedSession(id, "false");
+    }
 
    }
 
@@ -84,8 +114,8 @@ const DashboardPage = () => {
               <th className="pb-4 text-left">
                 <input
                   type="checkbox"
-                   onChange={handleSelectAll}
-                   checked={selectedSessions.length === sessions.length}
+                  onChange={handleSelectAll}
+                  checked={selectedSessions.length === sessions.length}
                   className="rounded border-white/30"
                 />
               </th>
@@ -98,7 +128,7 @@ const DashboardPage = () => {
             </tr>
           </thead>
           <tbody>
-            {sessions.map((session) => (
+            {sessions.filter((session) => session.visibility === "true").map((session) => (
               <tr key={session._id} className="border-b border-white/10">
                 <td className="py-4">
                   <input
