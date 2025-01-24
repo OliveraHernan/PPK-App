@@ -5,7 +5,7 @@ export interface DataSession {
     endDate: string;
     duration: number;
     status: string;
-    visibility: string;
+    visibility: boolean;
     facilitator: string;
     participants: string[];
     estimationType: string;

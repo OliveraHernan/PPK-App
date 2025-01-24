@@ -15,10 +15,26 @@ const DashboardPage = () => {
   useEffect(() => {
     const fetchSessions = async () => {
       try {
-        const response = await fetch("/api/sessions");
-        const data:{ sessions: DataSession[] } = await response.json();
-        setSessions(data.sessions);
-        console.log("Sesiones obtenidas:", data.sessions);
+        const token = localStorage.getItem('token'); // Obtener el token del almacenamiento local
+        if (!token) {
+          throw new Error('Token no encontrado');
+        }
+
+        const response = await fetch("/api/sessions", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}` // Incluir el token en los encabezados de la solicitud
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Error al obtener las sesiones');
+        }
+
+        const data: DataSession[] = await response.json(); // Asegúrate de que el tipo de datos sea correcto
+        setSessions(data); // Asigna los datos al estado
+        console.log("Sesiones obtenidas:", data);
       } catch (error) {
         console.log("Error al obtener las sesiones:", error);
       }
@@ -30,22 +46,22 @@ const DashboardPage = () => {
 
   const updatedSession = async (id: string, change: string) => {
     try {
-      const response = await fetch(`/api/sessions/${id}`, {
+      const response = await fetch(`/api/sessions`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ visibility: change }),
+        body: JSON.stringify({ id, visibility: change }), // Pasar el ID en el cuerpo de la solicitud
       });
       if (!response.ok) {
-        throw new Error('Error al actualizar la sesión');
+        throw new Error('Error al actualizar la sesión');
       }
       const updatedData: DataSession = await response.json();
       setSessions((prevSessions) =>
         prevSessions.map((session) => (session._id === id ? updatedData : session))
       );
     } catch (error) {
-      console.log("Error al actualizar la sesión:", error);
+      console.log("Error al actualizar la sesión:", error);
     }
   };
 
@@ -66,14 +82,14 @@ const DashboardPage = () => {
      }
    };
 
-   const changeVisibility = () =>{
+   const changeVisibility = async () => {
     for (let selected = 0; selected < selectedSessions.length; selected++) {
       console.log("Sesiones seleccionadas:", selectedSessions[selected]);
       const id = selectedSessions[selected];
-      updatedSession(id, "false");
+      await updatedSession(id, "false");
     }
+  };
 
-   }
 
    const downloadDocument = () =>{
 
@@ -112,10 +128,10 @@ const DashboardPage = () => {
           <thead>
             <tr className="border-b border-white/10">
               <th className="pb-4 text-left">
-                <input
+              <input
                   type="checkbox"
                   onChange={handleSelectAll}
-                  checked={selectedSessions.length === sessions.length}
+                  checked={selectedSessions?.length === sessions?.length}
                   className="rounded border-white/30"
                 />
               </th>
@@ -128,20 +144,20 @@ const DashboardPage = () => {
             </tr>
           </thead>
           <tbody>
-            {sessions.filter((session) => session.visibility === "true").map((session) => (
+            {sessions?.filter((session) => session.visibility === true).map((session) => (
               <tr key={session._id} className="border-b border-white/10">
                 <td className="py-4">
                   <input
                     type="checkbox"
-                     checked={selectedSessions.includes(session._id)}
-                     onChange={() => handleSelectSession(session._id)}
+                    checked={selectedSessions.includes(session._id)}
+                    onChange={() => handleSelectSession(session._id)}
                     className="rounded border-white/30"
                   />
                 </td>
                 <td className="py-4 text-center">{session.name}</td>
                 <td className="py-4 text-center">{session.duration}</td>
                 <td className="py-4 text-center">{session.userStories.length}</td>
-                <td className="py-4 text-center">{session.updatedAt}</td>
+                <td className="py-4 text-center">{new Date(session.updatedAt).toLocaleString()}</td>
                 <td className="py-4 text-center">
                   <span
                     className={`px-2 py-1 rounded-full text-xs ${

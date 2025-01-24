@@ -199,28 +199,18 @@ export async function GET(req: NextRequest) {
 export async function PATCH(req: NextRequest) {
   try {
     await connectDB();
-    
-    const { sessionId, isActive } = await req.json();
-    const userId = req.headers.get('user-id'); // You'll need to implement proper auth
+    const { id, visibility } = await req.json(); // Extraer el ID y la visibilidad del cuerpo de la solicitud
 
-    if (!userId || !isValidObjectId(userId)) {
-      return NextResponse.json({ error: 'Invalid or missing user ID' }, { status: 401 });
+    if (!id || !isValidObjectId(id)) {
+      throw new Error('Invalid session ID');
     }
 
-    if (!sessionId || !isValidObjectId(sessionId)) {
-      return NextResponse.json({ error: 'Invalid session ID' }, { status: 400 });
-    }
-
-    const session = await Session.findOne({
-      _id: new ObjectId(sessionId),
-      createdBy: new ObjectId(userId)
-    });
-
+    const session = await Session.findById(id);
     if (!session) {
-      return NextResponse.json({ error: 'Session not found' }, { status: 404 });
+      throw new Error('Session not found');
     }
 
-    session.isActive = isActive;
+    session.visibility = visibility;
     await session.save();
 
     return NextResponse.json(session);
@@ -228,7 +218,7 @@ export async function PATCH(req: NextRequest) {
     console.error("Error in PATCH /api/sessions:", error.message);
     return NextResponse.json(
       { error: error.message },
-      { status: 500 }
+      { status: error.message.includes('Invalid') || error.message.includes('not found') ? 400 : 500 }
     );
   }
 }
