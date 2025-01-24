@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 import connectDB from '@/src/lib/db/mongodb';
 import Session from '@/src/lib/db/models/Session';
+import { verifyToken } from '@/src/lib/auth/token';
 
 interface Vote {
   userId: string;
@@ -23,14 +24,25 @@ interface SessionData {
   startDate: string;
   endDate?: string;
   duration: number;
-  status: 'scheduled' | 'active' | 'completed';
+  status: 'active' | 'inactive';
   facilitator: string;
   participants: string[];
-  estimationType: 'fibonacci' | 'tshirt' | 'custom';
-  customEstimationValues?: (number | string)[];
-  visibility: 'private' | 'public';
+  estimationType: 'fibonacci' | 'tshirt';
+  visibility: boolean;
   accessCode?: string;
-  userStories: UserStory[];
+  createdBy?: string;
+  isActive?: boolean;
+  userStories: {
+    title: string;
+    description: string;
+    priority: 'high' | 'medium' | 'low';
+    status: 'pending' | 'voting' | 'completed';
+    votes: {
+      userId: string;
+      value: number | string;
+      timestamp?: Date;
+    }[];
+  }[];
 }
 
 // Validation functions
@@ -73,9 +85,7 @@ function validateSessionData(data: SessionData): void {
     throw new Error('Invalid estimation type');
   }
 
-  if (data.estimationType === 'custom' && (!Array.isArray(data.customEstimationValues) || data.customEstimationValues.length === 0)) {
-    throw new Error('Custom estimation type requires valid estimation values');
-  }
+
 
   if (Array.isArray(data.userStories)) {
     data.userStories.forEach((story, index) => {
@@ -120,6 +130,8 @@ function convertToMongooseFormat(data: SessionData) {
     });
   }
 
+  converted.visibility = data.visibility === true;
+
   return converted;
 }
 
@@ -127,80 +139,95 @@ export async function POST(req: NextRequest) {
   try {
     await connectDB();
     const data: SessionData = await req.json();
-    console.log('Received session data:', data);
 
-    validateSessionData(data);
+    const token = req.headers.get('Authorization')?.split(' ')[1];
+    if (!token) {
+      return NextResponse.json({ error: 'Token no proporcionado' }, { status: 401 });
+    }
+
+    const user = await verifyToken(token);
+    if (!user) {
+      return NextResponse.json({ error: 'Token inválido o expirado' }, { status: 401 });
+    }
 
     const convertedData = convertToMongooseFormat(data);
+    convertedData.createdBy = new ObjectId(user.id).toString();
+    convertedData.isActive = true;
 
     const session = new Session(convertedData);
     await session.save();
 
     return NextResponse.json(session);
   } catch (error: any) {
-    console.error("Error in POST /api/sessions:", error.message);
+    console.error("Error en POST /api/sessions:", error.message);
     return NextResponse.json(
-      { error: error.message }, 
-      { status: error.message.includes('required') || error.message.includes('Invalid') ? 400 : 500 }
+      { error: error.message },
+      { status: 500 }
     );
   }
 }
-
-// Mark the route as dynamic
-export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
   try {
     await connectDB();
 
-    const searchParams = req.nextUrl.searchParams;
-    const query: any = {};
-
-    const facilitator = searchParams.get('facilitator');
-    const status = searchParams.get('status');
-    const visibility = searchParams.get('visibility');
-    const accessCode = searchParams.get('accessCode');
-
-    if (facilitator && isValidObjectId(facilitator)) {
-      query.facilitator = new ObjectId(facilitator);
+    const token = req.headers.get('Authorization')?.split(' ')[1];
+    if (!token) {
+      return NextResponse.json({ error: 'Token no proporcionado' }, { status: 401 });
     }
 
-    if (status && ['scheduled', 'active', 'completed'].includes(status)) {
-      query.status = status;
+    const user = await verifyToken(token);
+    if (!user) {
+      return NextResponse.json({ error: 'Token inválido o expirado' }, { status: 401 });
     }
 
-    if (visibility && ['private', 'public'].includes(visibility)) {
-      query.visibility = visibility;
-    }
+    const query = { createdBy: new ObjectId(user.id) };
 
-    if (accessCode) {
-      query.accessCode = accessCode;
-    }
+    const sessions = await Session.find(query).sort({ startDate: -1 });
 
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '10');
-    const skip = (page - 1) * limit;
-
-    const total = await Session.countDocuments(query);
-
-    const sessions = await Session.find(query)
-      .skip(skip)
-      .limit(limit)
-      .sort({ startDate: -1 });
-
-    return NextResponse.json({
-      sessions,
-      pagination: {
-        total,
-        page,
-        limit,
-        pages: Math.ceil(total / limit)
-      }
-    });
+    return NextResponse.json(sessions);
   } catch (error: any) {
-    console.error("Error in GET /api/sessions:", error.message);
+    console.error("Error en GET /api/sessions:", error.message);
     return NextResponse.json(
-      { error: error.message }, 
+      { error: error.message },
+      { status: 500 }
+    );
+  }
+}
+
+// Add a new PATCH endpoint to toggle session active status
+export async function PATCH(req: NextRequest) {
+  try {
+    await connectDB();
+    
+    const { sessionId, isActive } = await req.json();
+    const userId = req.headers.get('user-id'); // You'll need to implement proper auth
+
+    if (!userId || !isValidObjectId(userId)) {
+      return NextResponse.json({ error: 'Invalid or missing user ID' }, { status: 401 });
+    }
+
+    if (!sessionId || !isValidObjectId(sessionId)) {
+      return NextResponse.json({ error: 'Invalid session ID' }, { status: 400 });
+    }
+
+    const session = await Session.findOne({
+      _id: new ObjectId(sessionId),
+      createdBy: new ObjectId(userId)
+    });
+
+    if (!session) {
+      return NextResponse.json({ error: 'Session not found' }, { status: 404 });
+    }
+
+    session.isActive = isActive;
+    await session.save();
+
+    return NextResponse.json(session);
+  } catch (error: any) {
+    console.error("Error in PATCH /api/sessions:", error.message);
+    return NextResponse.json(
+      { error: error.message },
       { status: 500 }
     );
   }
