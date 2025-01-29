@@ -66,23 +66,33 @@ const DashboardPage = () => {
   };
 
 
-   const handleSelectAll = (e: ChangeEvent<HTMLInputElement>) => {
-     if (e.target.checked) {
-       setSelectedSessions(sessions.map((s) => s._id));
-     } else {
-       setSelectedSessions([]);
-     }
-   };
+  const handleSelectAll = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      setSelectedSessions(sessions.map((s) => s._id));
+    } else {
+      setSelectedSessions([]);
+    }
+  };
 
-   const handleSelectSession = (id: string) => {
-     if (selectedSessions.includes(id)) {
-       setSelectedSessions(selectedSessions.filter((s) => s !== id));
-     } else {
-       setSelectedSessions([...selectedSessions, id]);
-     }
-   };
+  const handleSelectSession = (id: string) => {
+    if (selectedSessions.includes(id)) {
+      setSelectedSessions(selectedSessions.filter((s) => s !== id));
+    } else {
+      setSelectedSessions([...selectedSessions, id]);
+    }
+  };
 
-   const changeVisibility = async () => {
+  const handleGenerateCode = async() => {
+    const newCode = generateRandomCode();
+    try {
+      await navigator.clipboard.writeText(newCode);
+      console.info('Código copiado al portapapeles:', newCode);
+    } catch (error) {
+      console.error('Error al copiar al portapapeles:', error);
+    }
+  };
+
+  const changeVisibility = async () => {
     for (let selected = 0; selected < selectedSessions.length; selected++) {
       console.log("Sesiones seleccionadas:", selectedSessions[selected]);
       const id = selectedSessions[selected];
@@ -91,9 +101,19 @@ const DashboardPage = () => {
   };
 
 
-   const downloadDocument = () =>{
+  const downloadDocument = () =>{
 
    }
+
+  const generateRandomCode = (length: number = 8): string => {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      result += characters[randomIndex];
+      }
+    return result;
+  }
 
   return (
     <>
@@ -111,11 +131,13 @@ const DashboardPage = () => {
             <Download className="w-4 h-4" />
             Exportar
           </Button>
-          <Button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-white text-sm">
+          <Button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-white text-sm"
+          onClick={() => {console.log("Crear nueva sala")}}>
             <Plus className="w-4 h-4" />
             Crear nueva sala
           </Button>
-          <Button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-white text-sm">
+          <Button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-white text-sm"
+          onClick={() => {console.log("Unirse a sala")}}>
             <UserPlus className="w-4 h-4" />
             Unirse a sala
           </Button>
